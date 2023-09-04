@@ -1,1 +1,7 @@
-# mephi-icis-ib-symmetric-cryptosystems
+# Симметричные криптосистемы
+
+## [Labs](labs)
+* [Атака при многократном использовании одноразового блокнота](labs/1)
+
+## [Homeworks](homeworks)
+* [Домашнее задание №1](homeworks/hw1.pdf)
