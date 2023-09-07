@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-constexpr std::array<const char* const, 11> hexes {
+constexpr std::array<const char* const, 11> hexes{
 	"f9e4d9bff5bac624e2ce1bb3c4cce85336d650082caa9037eb48f6a5aedf9ff6f8f4daa2a3e358a783321dd0d09ffa57f9528f4551c65a726620117c81ff867786c50dfaed6056c670a8103b4dab6fe7cfae8bfb71803aa04023e0271b2bc012e10e09901d58c2d654d34004109da5ec79e55f8b42c624ce6c6befeb44edb8f36229c19e32fe40e7596bca",
 	"ebf495b9e6f4912df6c10bfcc69ef3593294520461ad9b2fa400e3f1b1d79fbeb6ead8e3a5fe5eead73917d2d28fe312e944c20a6bc60931666e52729fe28c25c0d71ae1ec7756dd7eed532741b679ed9da39a8f3f993cba516eee720c64c85cb5391d95164f818500c808031e9daba1",
 	"fae99cfcfabd8527a3d907b5d88bbc5a31994b0961839020b215acf4f9df98beb6ead8e3baf20da9d12802c9cf8dfc53fb49c41775831970696e556f84fa8c77818402e1f63219d438ab513b5bbf2de1dcfcc9ee7cd717b54623c3681121cf",
@@ -17,7 +17,7 @@ constexpr std::array<const char* const, 11> hexes {
 	"fae99cfce7b18530e6d94fb1d39fef5a34931e1432f2d512a31cada5acc582f0bfa5cee3bee35fafc23c52dec99ae657f90d810b63d51f63273b4278cdf88132c0cf0bf7a27f19c07ded443d59a82dedd3eddf",
 };
 
-static auto hex_to_bytes(const std::string& hex)
+[[nodiscard]] static auto hex_to_bytes(const std::string& hex)
 {
 	std::vector<uint8_t> result;
 	for (size_t i{}; i < hex.length(); i += 2)
@@ -32,7 +32,7 @@ static constexpr void xorx(const uint8_t* a, const uint8_t* b, uint8_t* c, const
 		c[i] = a[i] ^ b[i];
 }
 
-static auto mix_with(const std::vector<uint8_t>& vec, std::string_view pattern)
+[[nodiscard]] static auto mix_with(const std::vector<uint8_t>& vec, std::string_view pattern)
 {
 	std::vector<std::string> res;
 	if (pattern.length() > vec.size())
@@ -58,10 +58,10 @@ static auto mix_with(const std::vector<uint8_t>& vec, std::string_view pattern)
 	return res;
 }
 
-static auto proceed(const std::string& hex1, const std::string& hex2, const std::string_view pattern)
+[[nodiscard]] static auto proceed(const std::string& hex1, const std::string& hex2, const std::string_view pattern)
 {
-	auto lhs = hex_to_bytes(hex1);
-	auto rhs = hex_to_bytes(hex2);
+	const auto lhs = hex_to_bytes(hex1);
+	const auto rhs = hex_to_bytes(hex2);
 
 	std::vector<uint8_t> out(std::min(std::size(lhs), std::size(rhs)));
 	xorx(lhs.data(), rhs.data(), out.data(), std::size(out));
@@ -73,22 +73,16 @@ auto main() -> signed
 	std::ios_base::sync_with_stdio(false);
 	std::cout.tie(nullptr);
 
-	std::string patterns[]{
-		" the ",
-	};
-
-	for (const auto& pattern : patterns)
+	const std::string patterns{ " the " };
 	for (size_t i{}; i < std::size(hexes); ++i)
 		for (size_t j{}; j < std::size(hexes); ++j)
 			if (i < j)
-			{
 				if (const auto res = proceed(hexes[i], hexes[j], pattern); !res.empty())
 				{
 					std::cout << std::format("[{}^{}]\n", i + 1, j + 1);
 					for (const auto& str : res)
 						std::cout << str << '\n';
 				}
-			}
 	
 	return 0;
 }
